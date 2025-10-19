@@ -292,9 +292,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 var vite_config_default = defineConfig({
-  plugins: [
-    react()
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
@@ -303,8 +301,11 @@ var vite_config_default = defineConfig({
     }
   },
   root: path.resolve(__dirname, "client"),
+  base: "/website2/",
+  // Matches your repo name for asset paths
   build: {
-    outDir: path.resolve(__dirname, "dist/public"),
+    outDir: path.resolve(__dirname, "dist"),
+    // Simplified to 'dist' for gh-pages
     emptyOutDir: true
   },
   server: {
