@@ -186,7 +186,13 @@ export class MemStorage implements IStorage {
 
     evidenceData.forEach((e, index) => {
       const id = (index + 1).toString();
-      this.evidence.set(id, { ...e, id });
+      const evidence: Evidence = {
+        ...e,
+        id,
+        imageUrl: e.imageUrl ?? null,
+        timestamp: e.timestamp ?? null,
+      };
+      this.evidence.set(id, evidence);
     });
   }
 
@@ -219,7 +225,12 @@ export class MemStorage implements IStorage {
 
   async createEvidence(insertEvidence: InsertEvidence): Promise<Evidence> {
     const id = randomUUID();
-    const evidence: Evidence = { ...insertEvidence, id };
+    const evidence: Evidence = {
+      ...insertEvidence,
+      id,
+      imageUrl: insertEvidence.imageUrl ?? null,
+      timestamp: insertEvidence.timestamp ?? null,
+    };
     this.evidence.set(id, evidence);
     return evidence;
   }
