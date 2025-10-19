@@ -1,82 +1,16 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, MessageSquare, Building2, Star, X } from "lucide-react";
+import { FileText, MessageSquare, Building2, Star, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-const evidenceItems = [
-  {
-    id: "1",
-    title: "Original Invoice - Unauthorized Charges",
-    type: "invoice",
-    category: "Invoices",
-    description: "Invoice showing APR LPFP and 4-bar MAP sensor added without customer authorization.",
-    timestamp: "2024-03",
-  },
-  {
-    id: "2",
-    title: "Altered Invoice - Post-Complaint",
-    type: "invoice",
-    category: "Invoices",
-    description: "Modified version of invoice with line items removed after customer raised concerns.",
-    timestamp: "2024-04",
-  },
-  {
-    id: "3",
-    title: "Message Admission - Negligent Handling",
-    type: "message",
-    category: "Messages",
-    description: "Written admission stating 'spat on it / loaded it with grease' regarding propshaft handling.",
-    timestamp: "2024-04",
-  },
-  {
-    id: "4",
-    title: "Coercion Message - Gag Waiver Demand",
-    type: "message",
-    category: "Messages",
-    description: "Message demanding customer sign waiver and delete reviews before vehicle release.",
-    timestamp: "2024-04",
-  },
-  {
-    id: "5",
-    title: "ABN Lookup Results",
-    type: "registry",
-    category: "Business Records",
-    description: "Official Australian Business Register showing ABN cancelled in 2017.",
-    timestamp: "2024",
-  },
-  {
-    id: "6",
-    title: "ASIC Company Extract",
-    type: "registry",
-    category: "Business Records",
-    description: "Company registration showing director resignation in June 2023.",
-    timestamp: "2024",
-  },
-  {
-    id: "7",
-    title: "Google Review Response - False Allegations",
-    type: "review",
-    category: "Public Responses",
-    description: "Public review reply containing false criminal-style accusations against customer.",
-    timestamp: "2024-05",
-  },
-  {
-    id: "8",
-    title: "Conditional Offer Message",
-    type: "message",
-    category: "Messages",
-    description: "Message offering 'goodwill' pricing only if customer waives all rights.",
-    timestamp: "2024-04",
-  },
-];
+import { useEvidence } from "@/hooks/useEvidence";
+import type { Evidence } from "@shared/schema";
 
 const getTypeIcon = (type: string) => {
   switch (type) {
@@ -94,14 +28,25 @@ const getTypeIcon = (type: string) => {
 };
 
 export function EvidenceGallery() {
-  const [selectedEvidence, setSelectedEvidence] = useState<typeof evidenceItems[0] | null>(null);
+  const [selectedEvidence, setSelectedEvidence] = useState<Evidence | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const { data: evidenceItems, isLoading } = useEvidence();
 
   const categories = ["all", "Invoices", "Messages", "Business Records", "Public Responses"];
 
-  const filteredItems = selectedCategory === "all" 
+  const filteredItems = !evidenceItems ? [] : selectedCategory === "all" 
     ? evidenceItems 
     : evidenceItems.filter(item => item.category === selectedCategory);
+
+  if (isLoading) {
+    return (
+      <section id="evidence" className="py-24 px-4 sm:px-6 lg:px-8 bg-card">
+        <div className="max-w-7xl mx-auto flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="evidence" className="py-24 px-4 sm:px-6 lg:px-8 bg-card">

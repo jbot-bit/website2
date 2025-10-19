@@ -1,89 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, AlertTriangle, Info } from "lucide-react";
-
-const violations = [
-  {
-    id: "1",
-    date: "2017",
-    title: "Cancelled ABN - Continued Trading",
-    category: "registration",
-    severity: "critical",
-    description: "Australian Business Number (ABN) was cancelled in 2017, yet the business continued to operate and accept payments under the SC Diesel Tuning name without valid registration.",
-  },
-  {
-    id: "2",
-    date: "June 2023",
-    title: "Resigned as Director - Continued Operations",
-    category: "registration",
-    severity: "critical",
-    description: "Owner resigned as company director in June 2023 but continued to issue quotes, accept payments, and run business operations as if legally authorized to do so.",
-  },
-  {
-    id: "3",
-    date: "2017-2024",
-    title: "Unregistered Trading Name",
-    category: "registration",
-    severity: "high",
-    description: "Used 'SC Diesel Tuning' as an unregistered trading name to conduct business while concealing actual company registration details from customers.",
-  },
-  {
-    id: "4",
-    date: "2024",
-    title: "Unauthorized Invoice Additions",
-    category: "financial",
-    severity: "critical",
-    description: "Added costly parts to customer invoices without consent, including APR LPFP and 4-bar MAP sensor, significantly inflating charges beyond agreed scope.",
-  },
-  {
-    id: "5",
-    date: "2024",
-    title: "Retroactive Invoice Alterations",
-    category: "financial",
-    severity: "critical",
-    description: "Altered invoices after customer complaints were raised, removing or editing line items retroactively to obscure unauthorized charges.",
-  },
-  {
-    id: "6",
-    date: "2024",
-    title: "Admitted Negligent Handling",
-    category: "conduct",
-    severity: "high",
-    description: "Admitted in messages to having 'spat on it / loaded it with grease' when referring to customer's propshaft - demonstrating negligent and unprofessional handling of vehicle components.",
-  },
-  {
-    id: "7",
-    date: "2024",
-    title: "Vehicle Withheld for Coercion",
-    category: "coercion",
-    severity: "critical",
-    description: "Withheld customer's vehicle and demanded signing of gag-waiver agreement and deletion of negative reviews as conditions for vehicle release.",
-  },
-  {
-    id: "8",
-    date: "2024",
-    title: "Conditional 'Goodwill' Offer",
-    category: "coercion",
-    severity: "critical",
-    description: "Offered discounted 'goodwill' repair pricing only if customer waived all legal rights and agreed to silence complaints - classic coercion tactic.",
-  },
-  {
-    id: "9",
-    date: "2024",
-    title: "False Criminal Allegations",
-    category: "conduct",
-    severity: "high",
-    description: "Posted false criminal-style allegations about the customer in Google review replies to discredit complaints and retaliate against negative feedback.",
-  },
-  {
-    id: "10",
-    date: "2017-2024",
-    title: "Pattern of Registration Evasion",
-    category: "registration",
-    severity: "critical",
-    description: "Continued to operate and offer services despite cancelled/changed company registration details, demonstrating systematic pattern of regulatory evasion.",
-  },
-];
+import { AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
+import { useViolations } from "@/hooks/useViolations";
 
 const getSeverityIcon = (severity: string) => {
   switch (severity) {
@@ -123,6 +41,18 @@ const getCategoryLabel = (category: string) => {
 };
 
 export function Timeline() {
+  const { data: violations, isLoading } = useViolations();
+
+  if (isLoading) {
+    return (
+      <section id="timeline" className="py-24 px-4 sm:px-6 lg:px-8 bg-card">
+        <div className="max-w-5xl mx-auto flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="timeline" className="py-24 px-4 sm:px-6 lg:px-8 bg-card">
       <div className="max-w-5xl mx-auto">
@@ -141,7 +71,7 @@ export function Timeline() {
 
           {/* Timeline Items */}
           <div className="space-y-8">
-            {violations.map((violation, index) => (
+            {violations?.map((violation, index) => (
               <div key={violation.id} className="relative" data-testid={`timeline-item-${violation.id}`}>
                 {/* Timeline Marker */}
                 <div className="absolute left-8 top-6 w-4 h-4 -ml-[7px] rounded-full bg-destructive border-4 border-card hidden md:block" />
